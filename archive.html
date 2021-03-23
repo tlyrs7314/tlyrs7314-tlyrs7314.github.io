@@ -69,6 +69,8 @@
 
       <ul class="archive-post-list">
       
+        <li><a href="/2021/03/23/SecurinetCTF2021-Hack-the-Empire.html">Securinet CTF 2021 : Hack the Empire (884 pts, 19 solves)</a> <span class="archive-meta"> — <time class="archive-date" datetime="2021-03-23">March 23, 2021</time></span></li>
+      
         <li><a href="/2021/02/08/DiceCTF2021-Watermark-as-a-Service.html">DiceCTF 2021 : Watermark as a Service (245pts, 20 solves)</a> <span class="archive-meta"> — <time class="archive-date" datetime="2021-02-08">February 8, 2021</time></span></li>
       
       </ul><!-- .archive-post-list -->
@@ -111,7 +113,8 @@
   <script>
 	// Add anchors on DOMContentLoaded
 	document.addEventListener('DOMContentLoaded', function(event) {
-	  anchors.add('h2:not(.post-title), h3, h4, h5, h6');
+	  anchors.add('h1:not(.post-title), h2:not(.post-title), h3, h4, h5, h6');
+	  anchors.remove('.site-title');
 	});	
   </script>
 
