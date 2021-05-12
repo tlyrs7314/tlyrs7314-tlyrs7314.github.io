@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The logic behind matrix diagonalization with eigenvectors</title>
+  <meta name="description" content="Explaining diagonalization in linear algebra">
+  <link rel="canonical" href="https://tlyrs7314.github.io/2021/05/12/The-logic-behind-matrix-diagonalization.html">
+  <link rel="alternate" type="application/rss+xml" title="Std0r Feed"
+    href="https://tlyrs7314.github.io/feed.xml">
+  
+  <link rel="shortcut icon" href="/images/favicon.png" type="image/png" />
+  
+  <!-- Styles -->
+  <!--<link href="https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i%7CNoto+Serif:400,400i,700,700i&display=swap" rel="stylesheet">-->
+  <link href="/assets/css/style.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.css" integrity="sha384-t5CR+zwDAROtph0PXGte6ia8heboACF9R5l/DiY+WZ3P2lxNgvJkQk5n7GPvLMYw" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.js" integrity="sha384-FaFLTlohFghEIZkw6VGwmf9ISTubWAVYW8tG8+w2LAIftJEULZABrF9PPFv+tVkH" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/contrib/auto-render.min.js" integrity="sha384-bHBqxz8fokvgoJ/sc17HODNxa42TlaEhB+w8ZJXTc2nZf1VgEaFZeZvT4Mznfz0v" crossorigin="anonymous"
+    onload="renderMathInElement(document.body, { 'delimiters': [
+  {left: '$$', right: '$$', display: true},
+  {left: '$', right: '$', display: false},
+  {left: '\\(', right: '\\)', display: false},
+  {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+  {left: '\\begin{align}', right: '\\end{align}', display: true},
+  {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+  {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+  {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+  {left: '\\[', right: '\\]', display: true}
+] });"></script>
+
+</head>
+<body>
+
+  <div id="page" class="site">
+    <div class="inner">
+      <header class="site-header">
+  
+  <p class="site-title"><a class="logo-text" href="/">Std0r</a></p>
+  
+  <nav class="site-navigation">
+    <div class="site-navigation-wrap">
+      <h2 class="screen-reader-text">Main navigation</h2>
+      <ul class="menu">
+        
+        
+        
+        <li class="menu-item ">
+          <a class="" href="/archive">Archive</a>
+        </li>
+        
+      </ul><!-- .menu -->
+      <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span
+          class="icon-close" aria-hidden="true"></span></button>
+    </div><!-- .site-navigation-wrap -->
+  </nav><!-- .site-navigation -->
+  <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+</header>
+
+
+
+      <main class="main-content fadeInDown delay_075s">
+
+  <article class="post">
+    <header class="post-header">
+      <time class="post-date" datetime="2021-05-12">May 12, 2021</time>
+      <h1 class="post-title">The logic behind matrix diagonalization with eigenvectors</h1>
+      <div class="post-meta">
+        By <span class="post-author">Stdor</span><span class="post-tags"> in <a href="/tags#maths" rel="tag">maths</a>, <a href="/tags#linear-algebra" rel="tag">linear-algebra</a></span>
+      </div><!-- .post-meta -->
+      
+    </header><!-- .post-header -->
+    <div class="post-content">
+      <p>Diagonalization has a really close relationship with eigenvectors - the standard steps in diagonalizing a matrix is to find the eigenvalues with an eigenbasis. It first seemed like magic to me before knowing why this works. In this post, I’ll try to explain the rationale behind with the concept of linear transformation with two approaches: similarity diagram and matrix. The former one is a derivation oriented on the whole basis and linear transformation landscape, and the latter is merely a verification of correctness based on pure matrix multiplication mechanics.</p>
+
+<!--more-->
+
+<h1 id="definitions">Definitions</h1>
+
+<p>First off, we’ll make some definitions to make sure we are on the same page:</p>
+
+<h2 id="diagonal-matrix">Diagonal matrix</h2>
+
+<p>A <strong><em>diagonal matrix</em></strong> is a matrix in which all entries are zeros, except possibly the entries that lie on the diagonal line ($a_{ij} ~\forall i=j$)</p>
+
+\[\text{Diagonal matrix } D = 
+\begin{pmatrix}
+a_{11} &amp; &amp; &amp; \\
+&amp; a_{22} &amp; &amp; \\
+&amp; &amp; \ddots &amp; \\
+&amp; &amp; &amp; a_{nn} \\
+\end{pmatrix}\]
+
+<p><strong><em>Diagonalization</em></strong> is the process of expressing a square matrix $A$ into a product of matrices, such that for diagonal matrix $D$ and non-singular matrix $P$,</p>
+
+\[A = PDP^{-1}.\]
+
+<h2 id="basis">Basis</h2>
+
+<p>A <strong><em>basis</em></strong> is a set of linear independent vectors that spans a vector space. We now define the $\text{Rep}$ notation. For a basis $B$ that consists of three vectors $\lang \vec{\beta_1}, \vec{\beta_2}, \vec{\beta_3} \rang$, the notation</p>
+
+\[\text{Rep}_B({\vec{v}})= \begin{pmatrix}c_1\\c_2\\c_3\end{pmatrix}\]
+
+<p>means that</p>
+
+\[\vec{v}=c_1\vec{\beta}_1+c_2\vec{\beta}_2+c_3\vec{\beta}_3.\]
+
+<p>That is, we are expressing $\vec{v}$ from standard basis $\varepsilon_3$ in basis $B$. If that’s too abstract, you can check out 3blue1brown’s explanation with visualizations <a href="https://www.youtube.com/watch?v=P2LTAUO1TdA">here</a>.</p>
+
+<h3 id="standard-basis">Standard basis</h3>
+
+<p>The <strong><em>standard basis</em></strong> $\varepsilon_n$ is the basis \(\lang \begin{pmatrix}1 \\0\\ \vdots \\ 0\end{pmatrix}, \begin{pmatrix}0 \\1\\ \vdots \\ 0\end{pmatrix},~ \dots ~,\begin{pmatrix}0 \\ 0 \\ \vdots \\ 1\end{pmatrix}\rang\). For example, $\varepsilon_3$ is the familiar $xyz$ coordinate.</p>
+
+<h2 id="change-of-basis-matrix">Change of basis matrix</h2>
+
+<p>A <strong><em>Change of basis matrix</em></strong> that changes a vector from basis $B$ to $D$ is denoted by $\text{Rep}_{B,D}(id)$. Note that a linear transformation represented by a matrix is to be applied on the left. Consider the following operation:</p>
+
+\[\text{Rep}_{B,D}(id)\times\text{Rep}_B(\vec{v})=\text{Rep}_D(\vec{v})\]
+
+<p>Originally, we have $\vec{v}$ expressed in basis $B$. By multiplying the change of basis matrix on the left, it is now expressed in basis $D$.</p>
+
+<h2 id="eigenvector--eigenvalues">Eigenvector &amp; Eigenvalues</h2>
+
+<p>An <strong><em>Eigenvector</em></strong> is a non-zero vector that, when applied with a linear transformation, becomes a scalar multiple of the original. Formally, for a linear transformation $t$ and an <strong><em>eigenvector</em></strong> $\vec{v}\neq0$,</p>
+
+\[t(\vec{v})=\lambda \vec{v}\]
+
+<p>for some constants $\lambda$. If we represent the linear transformation $t$ with matrix $A$, then</p>
+
+\[A\vec{v}=\lambda \vec{v}.\]
+
+<p>The corresponding $\lambda$ is termed the <strong><em>eigenvalue</em></strong> for vector $\vec{v}$.</p>
+
+<h1 id="diagonalizing-matrix-with-eigenvectors">Diagonalizing matrix with eigenvectors</h1>
+
+<p>The standard procedure to diagonalize an $n\times n$ matrix is to find $n$ eigenvalues $\lambda_i$ (not required to be distinct) and form a diagonal matrix with them. $A$ is formed by corresponding eigenvectors. That is</p>
+
+\[P=
+\begin{pmatrix}
+\vec{v_1} &amp;
+\vec{v_2} &amp;
+\dots &amp;
+\vec{v_n}
+
+\end{pmatrix},\quad
+D=
+\begin{pmatrix}
+\lambda_{1} &amp; &amp; &amp; \\
+&amp; \lambda_{2} &amp; &amp; \\
+&amp; &amp; \ddots &amp; \\
+&amp; &amp; &amp; \lambda_{n} \\
+\end{pmatrix}
+\tag{1}\]
+
+<p>where</p>
+
+\[A\vec{v_i}=\lambda_i\vec{v}_i			\quad\forall~1\le i \le n\tag{2}\]
+
+<p>Note that the vectors $\vec{v}_i$ should be linear independent. As $P$ is constructed from $\vec{v}_i$, if any of them are linear dependent, then we would not have $P^{-1}$.</p>
+
+<h2 id="an-example">An example</h2>
+
+<p>We’ll look at a sample of $2\times 2$ matrix diagonalization. Consider the matrix</p>
+
+\[A =
+\begin{pmatrix}
+5 &amp; 3 \\
+1 &amp; 7
+\end{pmatrix}\]
+
+<p>We find the eigenvalues from the characteristic equation</p>
+
+\[\begin{vmatrix}
+A-\lambda I
+\end{vmatrix}=0 \\
+
+(5-\lambda)(7-\lambda)-3=0 \\
+
+\lambda^2-12\lambda+32=0\\
+
+\lambda = 4 \text{ or } \lambda = 8\]
+
+<p>For $\lambda = 4$, the system \((A-\lambda I ~\vert~ 0)\) becomes</p>
+
+\[\begin{pmatrix}
+\begin{array}{c c|c}
+1 &amp; 3 &amp; 0 \\
+1 &amp; 3 &amp; 0
+\\
+\end{array}
+\end{pmatrix}\]
+
+<p>Thus, \(\vec{v_1}=\begin{pmatrix}-3 \\ 1\end{pmatrix}\) is an eigenvector with eigenvalue $4$. One can easily verify that \(A\begin{pmatrix}-3 \\ 1\end{pmatrix} = 4\begin{pmatrix}-3 \\ 1\end{pmatrix}\).</p>
+
+<p>For $\lambda = 8$, the system is</p>
+
+\[\begin{pmatrix}
+\begin{array}{c c|c}
+-3 &amp; 3 &amp; 0 \\
+1 &amp; -1 &amp; 0
+\\
+\end{array}
+\end{pmatrix}\]
+
+<p>Thus, \(\vec{v_2}=\begin{pmatrix}1 \\ 1\end{pmatrix}\) is an eigenvector with eigenvalue $8$.</p>
+
+<p>Therefore, the diagonalization is \(P=\begin{pmatrix}\vec{v}_1 &amp; \vec{v}_2\end{pmatrix}=\begin{pmatrix} -3 &amp;  1\\ 1 &amp; 1\end{pmatrix}, \quad D=\begin{pmatrix}4 &amp;  0\\ 0 &amp; 8\end{pmatrix}\). We can verify that</p>
+
+\[\begin{pmatrix}
+5 &amp; 3 \\
+1 &amp; 7
+\end{pmatrix}
+=
+\begin{pmatrix} -3 &amp;  1\\ 1 &amp; 1\end{pmatrix}\begin{pmatrix}4 &amp;  0\\ 0 &amp; 8\end{pmatrix}\begin{pmatrix} -3 &amp;  1\\ 1 &amp; 1\end{pmatrix}^{-1}.\]
+
+<h1 id="deriving-from-the-similarity-diagram">Deriving from the similarity diagram</h1>
+
+<p>This way gives you a better intuition on why this works. We’ll introduce the similarity diagram adopted from Jim:</p>
+
+\[\Large\begin{CD}
+\varepsilon_n      @&gt;{A}&gt;&gt;  \varepsilon_n \\
+
+@A{\text{Rep}_{B,\varepsilon_n}(id)~}AA        @AA{~\text{Rep}_{B,\varepsilon_n}(id)}A\\
+
+B     @&gt;&gt;{D}&gt;	B
+\end{CD}\]
+
+<p>The four corners signifies the basis that represent the space $\R^n$. We can see that there are two matrices $A, D$, representing the linear transformations $t:\varepsilon_n\to\varepsilon_n$ and $t: B\to B$ respectively, where $B=\lang \vec{\beta}_1,~ \dots \vec{\beta}_n \rang$ is an <strong><em>eigenbasis</em></strong>. The vertical arrows signifies the path to convert a vector in basis $B$ to $\varepsilon_n$. For sure it could be done with the change of basis matrix \(\text{Rep}_{B,\varepsilon_n}(id)\).</p>
+
+<p>There are actually two ways to go from the upper-left corner to the upper-right one:</p>
+
+\[\Large\begin{CD}
+\varepsilon_n      @&gt;{A}&gt;&gt;  \varepsilon_n \\
+
+@.        @.\\
+
+B     @.	B
+\end{CD}\]
+
+<p>or</p>
+
+\[\Large\begin{CD}
+\varepsilon_n      @.  \varepsilon_n \\
+
+@V{\textcolor{red}{\text{Rep}_{B,\varepsilon_n}(id)^{-1}~}}VV        @AA{~\text{Rep}_{B,\varepsilon_n}(id)}A \\
+
+B     @&gt;&gt;{D}&gt;	B
+\end{CD}\]
+
+<p>Note that we flipped the first step and replaced it with the identity \(\text{Rep}_{B,D}(id)\times \text{Rep}_{D,B}(id)=I\). Intuitively, if we change the basis from $D$ to $B$ with \(\text{Rep}_{D,B}(id)\), and then from $B$ to $D$ with the matrix \(\text{Rep}_{B,D}(id)\), the overall operation is nothing. That is, in matrix terms, $I$.</p>
+
+<p>In the second route, since we know $B$ is an eigenbasis, $D$ must be diagonal. Why? We try to construct $D=\text{Rep}_{B, B}(t)$ from the standard procedure.</p>
+
+\[\begin{split}
+D&amp;=\text{Rep}_{B, B}(t)\\
+&amp;=\begin{pmatrix}
+\text{Rep}_{B}(t(\vec{\beta_1}))  &amp; \dots &amp; \text{Rep}_{B}(t(\vec{\beta_n}))
+\end{pmatrix}\\
+
+&amp;=\begin{pmatrix}
+\text{Rep}_{B}(\lambda_1\vec{\beta_1}) &amp; \dots &amp; \text{Rep}_{B}(\lambda_n\vec{\beta_n})
+\end{pmatrix} \\ 
+
+&amp;=\begin{pmatrix}
+\lambda_1\text{Rep}_{B}(\vec{\beta_1}) &amp; \dots &amp; \lambda_n\text{Rep}_{B}(\vec{\beta_n})
+\end{pmatrix} \quad\quad (3)\\
+
+&amp;=\begin{pmatrix}
+\lambda_{1} &amp; &amp; &amp; \\
+&amp; \lambda_{2} &amp; &amp; \\
+&amp; &amp; \ddots &amp; \\
+&amp; &amp; &amp; \lambda_{n} \\
+\end{pmatrix}
+
+\end{split}\]
+
+<p>Step $(3)$ can be derived from scalar commutativity: \(\text{Rep}_B(\lambda_i\vec{\beta}_i)=\text{Rep}_{\varepsilon_n,B}(id)\times(\lambda_i\vec{\beta}_i)=\lambda_i\text{Rep}_{\varepsilon_n,B}(id)\times\vec{\beta}_i=\lambda_i\text{Rep}_{B}(\vec{\beta_i})\). Our last step come from the obvious fact that \(\text{Rep}_{B}(\vec{\beta_i})=\begin{pmatrix} \vdots\\ 1\\ \vdots \end{pmatrix}\), because of how we defined basis $B$. A <a href="#basis">routine checking</a> from above shows</p>
+
+\[0\vec{\beta}_1+\dots+1\vec{\beta}_i+\dots+0\vec{\beta}_n=\vec{\beta}_i.\]
+
+<p><br /></p>
+
+<p>The overall operation of the route is thus \(\text{Rep}_{B,\varepsilon_n}(id)\cdot D\cdot\text{Rep}_{B,\varepsilon_n}(id)^{-1}\) (remember to apply each operation to the right). Since the two routes yield the same result, we can write</p>
+
+\[A=\text{Rep}_{B,\varepsilon_n}(id)\cdot D\cdot\text{Rep}_{B,\varepsilon_n}(id)^{-1}\]
+
+<p>which is in the form \(A=PDP^{-1}\).</p>
+
+<div style="text-align: right"> $\square$ </div>
+
+<p>For now, you should know the true form of $A=PDP^{-1}$:</p>
+
+\[A=PDP^{-1}\iff\text{Rep}_{\varepsilon_n,\varepsilon_n}(t)=\text{Rep}_{B,\varepsilon_n}(id)\cdot \text{Rep}_{B,B}(t)\cdot\text{Rep}_{B,\varepsilon_n}(id)^{-1}\]
+
+<p>What we are actually doing is to change the basis from $\varepsilon_n$ to an eigenbasis $B$ with $P^{-1}$ (that is \(\text{Rep}_{\varepsilon_n,B}(id)\)), so that the linear transformation in that basis could be represented by a diagonal matrix $D$. We finally convert the vector back to basis $\varepsilon_n$ with $P$. This should be clear as demonstrated by the similarity diagram.</p>
+
+<h1 id="verifying-with-matrix-operation">Verifying with matrix operation</h1>
+
+<p>We’ll now use a more algebraic way to prove the statement. We follow the construction from the section <a href="#diagonalizing-matrix-with-eigenvectors">Diagonalizing matrix with eigenvectors</a>.</p>
+
+\[\begin{split}
+PDP^{-1}&amp;=
+
+\begin{pmatrix}
+\vec{v_1} &amp;
+\dots &amp;
+\vec{v_n}
+\end{pmatrix}
+
+\begin{pmatrix}
+\lambda_{1} &amp; &amp; \\
+&amp; \ddots &amp; \\
+&amp; &amp; \lambda_{n} \\
+\end{pmatrix}
+
+\begin{pmatrix}
+\vec{v_1} &amp;
+\dots &amp;
+\vec{v_n}
+\end{pmatrix}^{-1}\\
+
+&amp;= \begin{pmatrix}
+\lambda_1 \vec{v_1} &amp;
+\dots &amp;
+\lambda_n \vec{v_n}
+\end{pmatrix}
+
+\begin{pmatrix}
+\vec{v_1} &amp;
+\dots &amp;
+\vec{v_n}
+\end{pmatrix}^{-1}\\
+
+&amp;= \begin{pmatrix}
+A \vec{v_1} &amp;
+\dots &amp;
+A \vec{v_n}
+\end{pmatrix}
+
+\begin{pmatrix}
+\vec{v_1} &amp;
+\dots &amp;
+\vec{v_n}
+\end{pmatrix}^{-1}\\
+
+&amp;= A\begin{pmatrix}
+\vec{v_1} &amp;
+\dots &amp;
+\vec{v_n}
+\end{pmatrix}
+
+\begin{pmatrix}
+\vec{v_1} &amp;
+\dots &amp;
+\vec{v_n}
+\end{pmatrix}^{-1}  \\
+
+&amp;= A
+
+\end{split}\]
+
+<div style="text-align: right"> $\square$ </div>
+
+<h1 id="conclusion">Conclusion</h1>
+
+<p>The similarity diagram and basis thing could be too theoretic, but it is definitely worth it to understand the whole logic behind. With all the hard work above, we finally arrived at the diagonalization method, which is a powerful tool for fast matrix exponentials. In the theorem \(A^k=PD^kP^{-1}\), it is much easier to compute $D^k$ and $P^{-1}$ compared to $A^k$.</p>
+
+<p>As I mentioned in the intro, eigenvectors and diagonalization are so closely related that I still don’t know which one was first defined (In Jim’s book, the concept of eigenvectors first appear in the diagonalization section without being named) . Maybe I’ll take a look at the developement of linear algebra for fun.</p>
+
+<p>Notations and insights for the similarity diagrams come from <a href="https://hefferon.net/linearalgebra/"><em>Linear Algebra</em></a> by Jim Hefferon.</p>
+
+    </div><!-- .post-content -->
+    <div class="post-share">
+      <span>Share:</span>
+      <a target="_blank"
+        href="https://twitter.com/intent/tweet?text=The%20logic%20behind%20matrix%20diagonalization%20with%20eigenvectors&amp;url=https://tlyrs7314.github.io/2021/05/12/The-logic-behind-matrix-diagonalization.html" rel="noopener">Twitter</a>
+    </div><!-- .share-post -->
+  </article><!-- .post -->
+
+  
+
+</main><!-- .main-content -->
+
+      <footer class="site-footer">
+  <div class="offsite-links">
+    
+      
+<a href="https://github.com/tlyrs7314" target="_blank" rel="noopener">
+  <span class="fa-github" aria-hidden="true"></span>
+  <span class="screen-reader-text">GitHub</span>
+</a>
+
+<a href="/feed.xml" target="_blank" rel="noopener">
+  <span class="fa-rss" aria-hidden="true"></span>
+  <span class="screen-reader-text">RSS</span>
+</a>
+
+    
+  </div><!-- .offsite-links -->
+  <div class="footer-bottom">
+    <div class="site-info">
+      <p>© Stdor 2021. Theme adapted from <a href="https://justgoodthemes.com/ghost-themes/scriptor">Scriptor</a>.</p>
+
+    </div><!-- .site-info -->
+    <a href="#page" id="back-to-top" class="back-to-top"><span class="screen-reader-text">Back to the top </span>&#8593;</a>
+  </div><!-- .footer-bottom -->
+</footer><!-- .site-footer -->
+
+    </div><!-- .inner -->
+  </div><!-- .site -->
+
+  <!-- Scripts -->
+  
+  <script src="/assets/js/plugins.js"></script>
+  <script src="/assets/js/custom.js"></script>
+  <script>
+	// Add anchors on DOMContentLoaded
+	document.addEventListener('DOMContentLoaded', function(event) {
+	  anchors.add('h1:not(.post-title), h2:not(.post-title), h3, h4, h5, h6');
+	  anchors.remove('.site-title');
+	});	
+  </script>
+
+</body>
+</html>
