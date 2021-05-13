@@ -32,7 +32,9 @@
 
 </head>
 <body>
-
+  <div id="bg"></div>
+  <!-- background by SVGBackgrounds.com  -->
+  
   <div id="page" class="site">
     <div class="inner">
       <header class="site-header">
@@ -286,7 +288,14 @@
 	document.addEventListener('DOMContentLoaded', function(event) {
 	  anchors.add('h1:not(.post-title), h2:not(.post-title), h3, h4, h5, h6');
 	  anchors.remove('.site-title');
-	});	
+	});
+	
+	// Adjust background opacity
+	var f = function(){
+		bg.style.opacity = Math.random()*0.2 + 0.05;
+	};
+	f();
+	setInterval(f, 5000);
   </script>
 
 </body>
