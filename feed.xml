@@ -5,8 +5,8 @@
         <description>Stdor's blog</description>
         <link>https://tlyrs7314.github.io/</link>
         <atom:link href="https://tlyrs7314.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-        <pubDate>Mon, 26 Jul 2021 11:41:13 +0800</pubDate>
-        <lastBuildDate>Mon, 26 Jul 2021 11:41:13 +0800</lastBuildDate>
+        <pubDate>Sun, 12 Sep 2021 10:51:06 +0800</pubDate>
+        <lastBuildDate>Sun, 12 Sep 2021 10:51:06 +0800</lastBuildDate>
         <generator>Jekyll v3.9.0</generator>
         
             <item>
@@ -628,18 +628,18 @@ We didn't want to make it more difficult to take in consideration what all the t
 
 &lt;p&gt;&lt;a href=&quot;https://github.com/dicegang/dicectf-2021-challs/tree/master/web/watermark-as-a-service&quot;&gt;Challenge Source&lt;/a&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;tldr&quot;&gt;TL;DR&lt;/h2&gt;
+&lt;h1 id=&quot;tldr&quot;&gt;TL;DR&lt;/h1&gt;
 
 &lt;ul&gt;
   &lt;li&gt;SSRF with &lt;a href=&quot;https://bit.ly&quot;&gt;bit.ly&lt;/a&gt; bypass&lt;/li&gt;
   &lt;li&gt;Google Cloud API Docker image leakage&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&quot;writeup&quot;&gt;Writeup&lt;/h2&gt;
+&lt;h1 id=&quot;writeup&quot;&gt;Writeup&lt;/h1&gt;
 
 &lt;p&gt;The service running on &lt;a href=&quot;https://waas.dicec.tf&quot;&gt;waas.dicec.tf&lt;/a&gt; is a simple website snapshot app powered by puppeteer, a library for controlling a headless chrome. The source code has some protections to prevent the server from visiting the google metadata server. Our first step is to bypass the restrictions and visit it to collect credentials and metadata about the project on Google Cloud.&lt;/p&gt;
 
-&lt;h3 id=&quot;ssrf&quot;&gt;SSRF&lt;/h3&gt;
+&lt;h2 id=&quot;ssrf&quot;&gt;SSRF&lt;/h2&gt;
 
 &lt;p&gt;Using &lt;a href=&quot;https://en.wikipedia.org/wiki/IPv4#Address_representations&quot;&gt;dotless-decimal IP&lt;/a&gt; (For example, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://192.0.2.235&lt;/code&gt;  can be written as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;http://3221226219&lt;/code&gt;.) and &lt;a href=&quot;http://xip.io&quot;&gt;xip.io&lt;/a&gt; did not work because of the regex check and URL parser used in the source code. At last I managed to bypass the checking with &lt;a href=&quot;https://bit.ly&quot;&gt;bit.ly&lt;/a&gt;, a URL shortening service. Basically, &lt;a href=&quot;https://bit.ly&quot;&gt;bit.ly&lt;/a&gt; returns a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HTTP 302 Found&lt;/code&gt; and a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Location&lt;/code&gt; Header, asking the client to go to the new location. With this trick, I was able to visit the metadata server.&lt;/p&gt;
 
@@ -650,7 +650,7 @@ We didn't want to make it more difficult to take in consideration what all the t
   
 &lt;/figure&gt;
 
-&lt;h3 id=&quot;google-cloud-api-leakage&quot;&gt;Google Cloud API Leakage&lt;/h3&gt;
+&lt;h2 id=&quot;google-cloud-api-leakage&quot;&gt;Google Cloud API Leakage&lt;/h2&gt;
 
 &lt;p&gt;Now that’s some progress! But according to the docs we would need a &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Metadata-Flavor: Google&lt;/code&gt; header in order to access the server. It seems impossible to inject a header after reviewing the nodejs code. Luckily, there is still a legacy &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;v1beta1&lt;/code&gt; api, and with that we could leak some very important infos:&lt;/p&gt;
 
@@ -698,7 +698,7 @@ We didn't want to make it more difficult to take in consideration what all the t
 
 &lt;p&gt;flag: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dice{the_cloud_is_just_someone_elses_computer}&lt;/code&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;references&quot;&gt;References&lt;/h2&gt;
+&lt;h1 id=&quot;references&quot;&gt;References&lt;/h1&gt;
 
 &lt;ol&gt;
   &lt;li&gt;&lt;a href=&quot;https://cloud.google.com/compute/docs/storing-retrieving-metadata&quot;&gt;https://cloud.google.com/compute/docs/storing-retrieving-metadata&lt;/a&gt;&lt;/li&gt;
